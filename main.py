@@ -7,7 +7,7 @@ from Post_processing import *
 
 images_path = '/home/renj3003/PhD/Drone_shroud/Cases/5e-5-nofloor/14mm/diametral/images'
 exp_data_path = '/home/renj3003/PhD/EDAT/Experiments_Jul-2023/Bell_07-2023/'
-sim_data_path = '/home/renj3003/PhD/Drone_shroud/Cases/5e-5-nofloor/14mm/diametral/data'
+sim_data_path = '/Users/jmrendona/Library/CloudStorage/OneDrive-USherbrooke/PhD/EDAT/Simulations/Iteration2/nosimp-vr12/v2/data'
 
 #read = int(input('If the .pfnc files want to be converted enter 1, otherwise enter a 0\n'))
 mics_sim = np.arange(8,14)
@@ -72,16 +72,16 @@ duct_z = [36,38,41,44,46,48,51,54,56,57,61]
 # mass_flux(3500,images_path,sim_data_path,'MassFlowRate_rear.txt','Plot')
 # read_mass_flux(sim_data_path,'MassFlowRate_front.csnc')
 # mass_flux(3500,images_path,sim_data_path,'MassFlowRate_front.txt','Plot')
-spectrogram(2,6420,mics_sim,angles,sim_data_path,images_path,'fluid',8)
+# spectrogram(2,6420,mics_sim,angles,sim_data_path,images_path,'fluid',8)
 # spectrogram(4,3500,duct_pr,duct_z,sim_data_path,images_path,5)
-# polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-all.txt','Plot',transient_rev=10,n_rev=4)
-# polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-casing.txt','Plot',transient_rev=10,n_rev=4)
-# polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-rotor.txt','Plot',transient_rev=10,n_rev=4)
-# polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-single-stator.txt','Plot',transient_rev=10,n_rev=4)
-# polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-blades.txt','Plot',transient_rev=10,n_rev=4)
-# polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-duct.txt','Plot',transient_rev=10,n_rev=4)
-# polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-single-blade.txt','Plot',transient_rev=10,n_rev=4)
-# polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-stator.txt','Plot',transient_rev=10,n_rev=4)
+polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-all.txt','Plot',transient_rev=10,n_rev=4)
+polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-casing.txt','Plot',transient_rev=10,n_rev=4)
+polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-rotor.txt','Plot',transient_rev=10,n_rev=4)
+polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-single-stator.txt','Plot',transient_rev=10,n_rev=4)
+polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-blades.txt','Plot',transient_rev=10,n_rev=4)
+polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-duct.txt','Plot',transient_rev=10,n_rev=4)
+polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-single-blade.txt','Plot',transient_rev=10,n_rev=4)
+polar_forces_plot(speed,sim_data_path,images_path,'CMF-forces-stator.txt','Plot',transient_rev=10,n_rev=4)
 
 # pdb.set_trace()
 

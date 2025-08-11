@@ -1527,6 +1527,8 @@ def polar_forces_plot(rpm:int,data_path:str,image_folder:str,file_name:str,case:
     - skip = the number of lines to skip in the .txt file. 18 is used as default\n
     '''
     
+    os.makedirs(os.path.join(data_path, 'images/polar_forces'), exist_ok=True)
+    
     data = pd.read_csv(os.path.join(data_path,file_name),skiprows=skip,delimiter='\s+')
     case_name = file_name.split('.')[0]
     forces_components = ['Fx','Fy','Fz']
@@ -1565,7 +1567,7 @@ def polar_forces_plot(rpm:int,data_path:str,image_folder:str,file_name:str,case:
             #ax.set_yticklabels([])
             #ax.yaxis.tick_right()
             plt.tight_layout()
-            plt.savefig(os.path.join(image_folder, 'forces/full', case_name + f'-{i[0]}-{i[1]}.png'), dpi=600)
+            plt.savefig(os.path.join(image_folder, 'images/polar_forces', case_name + f'-{i[0]}-{i[1]}.png'), dpi=600)
             #plt.show()
             plt.close()
 
@@ -1580,7 +1582,7 @@ def polar_forces_plot(rpm:int,data_path:str,image_folder:str,file_name:str,case:
             #ax.set_yticklabels([])
             #ax.yaxis.tick_right()
             plt.tight_layout()
-            plt.savefig(os.path.join(image_folder, 'forces/filtered', case_name + f'-{i[0]}-{i[1]}-{n_rev}revn_filtered.png'), dpi=600)
+            plt.savefig(os.path.join(image_folder, 'images/polar_forces', case_name + f'-{i[0]}-{i[1]}-{n_rev}revn_filtered.png'), dpi=600)
             #plt.show()
             plt.close()
     
@@ -1898,7 +1900,7 @@ def directivity(variable_name,image_path,angles,cases,legend,*parameters):
     ax=plt.gca()
     ax.set_yticklabels([])
     ax.yaxis.tick_right()
-    plt.savefig(image_path + 'directivity_' + variable_name + 'max=' + np.str(np.round(np.max(max_val),decimals=2)) + '.png' , dpi=1200)
+    plt.savefig(image_path + 'directivity_' + variable_name + 'max=' + np.str(np.round(np.max(max_val),decimals=2)) + '.png' , dpi=600)
     #plt.show()
     plt.close()
     return()
