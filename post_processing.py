@@ -138,7 +138,7 @@ def pfncconvert(read,mics,angles,data_path):
             for j in mics:
                 print('--------------------------------\n')
                 print(f'Converting mic {j} at angle {i}\n')
-                globals()[f'mic_{j}_{i}'] = read_probe_file(data_path ,f'mic_{j}_{i}.pfnc')
+                globals()[f'mic_{i}_{j}'] = read_probe_file(data_path ,f'mic_{i}_{j}.pfnc')
 
     else:
 
@@ -556,7 +556,9 @@ def single_welch(n_blades:int,speed:int,angles:list,mics:list,data_path:str,imag
 
     return(f,Pxx)
 
-def welch_all(n_blades,speed,first_it,second_it,pk,exp_mics,exp_data_path,sim_data_path,image_path,filtered,mode,*geometries):
+def welch_all(n_blades,speed,first_it,second_it,pk,exp_mics,exp_data_path,sim_data_path,filtered,mode,*geometries):
+
+    os.makedirs(os.path.join(sim_data_path, 'images/psd'), exist_ok=True)
 
     colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
 
@@ -590,16 +592,16 @@ def welch_all(n_blades,speed,first_it,second_it,pk,exp_mics,exp_data_path,sim_da
 
             n_chunk=4
             lensg=pressure.size
-            nperseg=lensg/n_chunk
-            nfft=next_greater_power_of_2(int(nperseg))
+            nperseg=int(lensg/n_chunk)
+            nfft=next_greater_power_of_2(nperseg)
 
             dt=time[1]-time[0]
             fs=1.0/dt
 
             keep = time > filtered
             pressure = pressure[keep]
-
-            [f_sim,Pxx_sim]=sg.welch(pressure,fs=fs,window='hann',nperseg=nperseg,nfft=nfft,scaling=mode)
+            # pdb.set_trace()
+            [f_sim,Pxx_sim]=sg.welch(pressure.values,fs=fs,window='hann',nperseg=nperseg,nfft=nfft,scaling=mode)
 
             f = f_sim
             
@@ -644,20 +646,20 @@ def welch_all(n_blades,speed,first_it,second_it,pk,exp_mics,exp_data_path,sim_da
                 pass
 
             if pa_check == 1:
-
+                labels = ['Rotor','Stator']
                 image_name = image_name + '_analogy'
                 c = 0
                 max_case = 0
 
-                for g in geometries:
+                for g,label in zip(geometries,labels):
 
                     c += 1
 
-                    file_name = f'fwh-{g}.mic_{i}_{j}_fwh.txt'
+                    file_name = f'fwh-nosimp-{g}.mic_{i}_{j}.txt'
                     data_pa = pd.read_csv(os.path.join(sim_data_path, file_name),skiprows=4,delimiter='\s+',header=None)
 
                     globals()[f'time_pa_{g}'] = data_pa[0]
-                    globals()[f'pressure_pa_{g}'] = data_pa[1]
+                    globals()[f'pressure_pa_{g}'] = data_pa[1].values
                     globals()[f'{g}_size'] = globals()[f'pressure_pa_{g}'].size
 
                     if globals()[f'{g}_size'] >= max_case:
@@ -678,7 +680,7 @@ def welch_all(n_blades,speed,first_it,second_it,pk,exp_mics,exp_data_path,sim_da
 
                     [globals()[f'f_{g}'],globals()[f'Pxx_{g}']] = sg.welch(globals()[f'pressure_pa_{g}'],fs=fs,window='hann',nperseg=nperseg,nfft=nfft,scaling=mode)
 
-                    plt.plot(globals()[f'f_{g}']/BPF,10*np.log10(globals()[f'Pxx_{g}']/4.0e-10),color = colors[c],label=f'LBM FW-H Acoustics {g}')
+                    plt.plot(globals()[f'f_{g}']/BPF,10*np.log10(globals()[f'Pxx_{g}']/4.0e-10),color = colors[c],label=f'LBM FW-H Acoustics {label}')
 
                 pressure_total = np.zeros(max_case)
 
@@ -709,7 +711,7 @@ def welch_all(n_blades,speed,first_it,second_it,pk,exp_mics,exp_data_path,sim_da
             if mode == 'density':
 
                 plt.grid(True, which='both', ls='--')
-                plt.legend(prop={'size': 10})
+                # plt.legend(prop={'size': 10})
                 plt.xlabel('Frequency $\\left[Hz/BPF\\right]$',fontsize=14, style='italic')
                 plt.ylabel('PSD $\\left[dB/Hz\\right]$',fontsize=14, style='italic')
                 #plt.ticklabel_format(axis='x', style='sci',scilimits=(0,0))
@@ -719,7 +721,7 @@ def welch_all(n_blades,speed,first_it,second_it,pk,exp_mics,exp_data_path,sim_da
                 ax=plt.gca()
                 ax.set_yticks([20,30,40,50,60,70,80])
                 ax.set_yticklabels(['','','','','$r_f-10$','$r_f$','$r_f+10$'])
-                #ax.yaxis.tick_right()
+                ax.yaxis.tick_right()
                 ax.set_xscale('log')
                 ax.xaxis.set_major_formatter(FormatStrFormatter('%1.0f'))
                 #ax.yaxis.tick_right()
@@ -728,7 +730,7 @@ def welch_all(n_blades,speed,first_it,second_it,pk,exp_mics,exp_data_path,sim_da
                 plt.tight_layout()
                 print('Saving confidential figure\n')
                 print('---------------------------------------------------------\n')
-                plt.savefig(os.path.join(image_path,image_name + '_confidential_density.png'), dpi=600)
+                plt.savefig(os.path.join(sim_data_path, 'images/psd', image_name + '_confidential_density.png'), dpi=600)
                 # plt.show()
                 plt.close()
             #     plt.plot(f,10*np.log10(Pxx/4.0e-10),'k',label='LBM simulation')
@@ -1399,7 +1401,7 @@ def welch_exp(image_path,path,variable,case,mode):
 
     return(f,Pxx)
 
-def forces_calculation(rpm:int,component:str,axis:str,format:str,image_folder:str,data_path:str,file_name:str,case:str,transient_rev=10,n_rev=2,skip=18):
+def forces_calculation(rpm:int,component:str,axis:str,format:str,data_path:str,file_name:str,case:str,transient_rev=10,n_rev=2,skip=18):
 
     '''
     This function is used to calculate both torque and thrust from PowerFlow simulations.\n
@@ -1415,6 +1417,9 @@ def forces_calculation(rpm:int,component:str,axis:str,format:str,image_folder:st
     - skip = the number of lines to skip in the .txt file. 18 is used as default\n
 
     '''
+    
+    os.makedirs(os.path.join(os.path.dirname(data_path), f'images/forces/filtered/{component}'), exist_ok=True)
+    os.makedirs(os.path.join(os.path.dirname(data_path), f'images/forces/full/{component}'), exist_ok=True)
     
     if component == 'F':
         figure_extension = '_thrust.png'
@@ -1455,7 +1460,7 @@ def forces_calculation(rpm:int,component:str,axis:str,format:str,image_folder:st
             #ax.set_yticklabels([])
             #ax.yaxis.tick_right()
             plt.tight_layout()
-            plt.savefig(os.path.join(image_folder, 'forces/full', case_name + figure_extension), dpi=600)
+            plt.savefig(os.path.join(os.path.dirname(data_path), f'images/forces/full/{component}', case_name + figure_extension), dpi=600)
             #plt.show()
             plt.close()
 
@@ -1470,7 +1475,7 @@ def forces_calculation(rpm:int,component:str,axis:str,format:str,image_folder:st
             #ax.set_yticklabels([])
             #ax.yaxis.tick_right()
             plt.tight_layout()
-            plt.savefig(os.path.join(image_folder, 'forces/filtered', case_name + f'_{n_rev}revn_filtered' + figure_extension), dpi=600)
+            plt.savefig(os.path.join(os.path.dirname(data_path), f'images/forces/filtered/{component}', case_name + f'_{n_rev}revn_filtered' + figure_extension), dpi=600)
             #plt.show()
             plt.close()
 
@@ -1503,14 +1508,14 @@ def forces_calculation(rpm:int,component:str,axis:str,format:str,image_folder:st
         #ax.set_yticklabels([])
         #ax.yaxis.tick_right()
         plt.tight_layout()
-        plt.savefig(os.path.join(image_folder, 'forces/filtered', filename.split('.')[0] + '_Strips' + figure_extension), dpi=600)
+        plt.savefig(os.path.join(data_path, f'images/forces/filtered/{component}', filename.split('.')[0] + '_Strips' + figure_extension), dpi=600)
         #plt.show()
         plt.close()
         
 
-    # return(time,force_data,filter_time,filter_force)
+    return(time,force_data,filter_time,filter_force)
 
-def polar_forces_plot(rpm:int,data_path:str,image_folder:str,file_name:str,case:str,transient_rev=5,n_rev=2,skip=18):
+def polar_forces_plot(rpm:int,data_path:str,file_name:str,case:str,transient_rev=5,n_rev=2,skip=18):
     
     '''
     This function is used to calculate the polar plot of the forces from PowerFlow simulations.\n
@@ -1527,7 +1532,7 @@ def polar_forces_plot(rpm:int,data_path:str,image_folder:str,file_name:str,case:
     - skip = the number of lines to skip in the .txt file. 18 is used as default\n
     '''
     
-    os.makedirs(os.path.join(data_path, 'images/polar_forces'), exist_ok=True)
+    os.makedirs(os.path.join(os.path.dirname(data_path), 'images/polar_forces'), exist_ok=True)
     
     data = pd.read_csv(os.path.join(data_path,file_name),skiprows=skip,delimiter='\s+')
     case_name = file_name.split('.')[0]
@@ -1567,22 +1572,29 @@ def polar_forces_plot(rpm:int,data_path:str,image_folder:str,file_name:str,case:
             #ax.set_yticklabels([])
             #ax.yaxis.tick_right()
             plt.tight_layout()
-            plt.savefig(os.path.join(image_folder, 'images/polar_forces', case_name + f'-{i[0]}-{i[1]}.png'), dpi=600)
+            print('Saving non filtered polar forces')
+            print(40*'-')
+            plt.savefig(os.path.join(os.path.dirname(data_path), 'images/polar_forces', case_name + f'-{i[0]}-{i[1]}.png'), dpi=600)
             #plt.show()
             plt.close()
 
-            plt.plot(filter_force_1,filter_force_2,linestyle='--', color='k')
+            plt.plot(filter_force_1,filter_force_2,linestyle='-', color='k')
             plt.grid()
             plt.xlabel(f'{i[0]} $[N]$',fontsize=14, style='italic')
             plt.ylabel(f'{i[1]} $[N]$',fontsize=14, style='italic')
             #plt.title('Filtered Thrust of the system')
             plt.xticks(fontsize=14)
             plt.yticks(fontsize=14)
-            #ax=plt.gca()
-            #ax.set_yticklabels([])
+            # plt.ylim([1.25,3.25])
+            # plt.xlim([-4.75,-1.75])
+            ax=plt.gca()
+            ax.set_yticklabels([])
+            ax.set_xticklabels([])
             #ax.yaxis.tick_right()
             plt.tight_layout()
-            plt.savefig(os.path.join(image_folder, 'images/polar_forces', case_name + f'-{i[0]}-{i[1]}-{n_rev}revn_filtered.png'), dpi=600)
+            print('Saving filtered polar forces')
+            print(40*'-')
+            plt.savefig(os.path.join(os.path.dirname(data_path), 'images/polar_forces', case_name + f'-{i[0]}-{i[1]}-{n_rev}revn_filtered.png'), dpi=600)
             #plt.show()
             plt.close()
     
