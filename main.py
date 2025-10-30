@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 from read_files import *
 from post_processing import *
+from pf_visualization import *
 
 images_path = '/home/renj3003/PhD/Drone_shroud/Cases/5e-5-nofloor/14mm/diametral/images'
 exp_data_path = '/Users/jmrendona/Library/CloudStorage/OneDrive-USherbrooke/PhD/EDAT/Experiments/Bell'
@@ -56,8 +57,8 @@ duct_z = [36,38,41,44,46,48,51,54,56,57,61]
 # time,fx_data,filter_time_m,filter_fx_m =
 # forces_calculation(speed,'M','z','integrated',images_path,sim_data_path,'CMF-forces-casing.txt','Plot',transient_rev=10,n_rev=1)
 # time,fz_data,filter_time_m,filter_fz_m = 
-forces_calculation(speed,'F','y','integrated',sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
-forces_calculation(speed,'M','y','integrated',sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
+# forces_calculation(speed,'F','y','integrated',sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
+# forces_calculation(speed,'M','y','integrated',sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
 # forces_calculation(speed,'F','z','integrated',sim_data_path,'CMF-forces-blades.txt','Plot',transient_rev=10,n_rev=1)
 # forces_calculation(speed,'F','z','integrated',sim_data_path,'CMF-forces-duct.txt','Plot',transient_rev=10,n_rev=1)
 # f,t,filter_time_m,filter_fz_m=forces_calculation(speed,'M','z','integrated',sim_data_path,'CMF-forces-single-stator.txt','Plot',transient_rev=10,n_rev=1)
@@ -74,7 +75,7 @@ forces_calculation(speed,'M','y','integrated',sim_data_path,'CMF_rotor.txt','Plo
 # mass_flux(3500,images_path,sim_data_path,'MassFlowRate_front.txt','Plot')
 # spectrogram(2,6420,mics_sim,angles,sim_data_path,images_path,'fluid',8)
 # spectrogram(4,3500,duct_pr,duct_z,sim_data_path,images_path,5)
-polar_forces_plot(speed,sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
+# polar_forces_plot(speed,sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
 # polar_forces_plot(speed,sim_data_path,'CMF-forces-casing.txt','Plot',transient_rev=10,n_rev=2)
 # polar_forces_plot(speed,sim_data_path,'CMF-forces-rotor.txt','Plot',transient_rev=10,n_rev=2)
 # polar_forces_plot(speed,sim_data_path,'CMF-forces-single-stator.txt','Plot',transient_rev=10,n_rev=4)
@@ -84,6 +85,11 @@ polar_forces_plot(speed,sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_r
 # polar_forces_plot(speed,sim_data_path,'CMF-forces-stator.txt','Plot',transient_rev=10,n_rev=2)
 
 # pdb.set_trace()
+
+
+# --------------------------------------- Visualization --------------------------------------#
+
+pf_snc_cp(1.204,101325,6000,0.018,0.122,10,'/home/renj3003/PhD/rotor-alone/UdeS_Case/6e-5_6000rpm-transitional/data','cp')
 
 print('Time to do magic')
 
