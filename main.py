@@ -8,8 +8,9 @@ from pf_visualization import *
 
 images_path = '/home/renj3003/PhD/Drone_shroud/Cases/5e-5-nofloor/14mm/diametral/images'
 exp_data_path = '/Users/jmrendona/Library/CloudStorage/OneDrive-USherbrooke/PhD/EDAT/Experiments/Bell'
-sim_data_path = '/Users/jmrendona/Library/CloudStorage/OneDrive-USherbrooke/PhD/Rotor_alone/6e-5-6000rpm/data'
-
+sim_data_path = '/Users/jmrendona/Library/CloudStorage/OneDrive-USherbrooke/PhD/rotor-alone/6e-5-6000rpm/data'
+sim_data_path_t = '/Users/jmrendona/Library/CloudStorage/OneDrive-USherbrooke/PhD/rotor-alone/6e-5-6000rpm-transition/data'
+sim_data_comp = '/Users/jmrendona/Library/CloudStorage/OneDrive-USherbrooke/PhD/rotor-alone/comparison/data'
 #read = int(input('If the .pfnc files want to be converted enter 1, otherwise enter a 0\n'))
 mics_sim = [0,90]
 # mics_sim = np.arange(0,180,15)
@@ -57,7 +58,8 @@ duct_z = [36,38,41,44,46,48,51,54,56,57,61]
 # time,fx_data,filter_time_m,filter_fx_m =
 # forces_calculation(speed,'M','z','integrated',images_path,sim_data_path,'CMF-forces-casing.txt','Plot',transient_rev=10,n_rev=1)
 # time,fz_data,filter_time_m,filter_fz_m = 
-# forces_calculation(speed,'F','y','integrated',sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
+# time,force_data,filter_time,filter_force = forces_calculation(speed,'F','y','integrated',sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
+# time_t,force_data_t,filter_time_t,filter_force_t = forces_calculation(speed,'F','y','integrated',sim_data_path_t,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
 # forces_calculation(speed,'M','y','integrated',sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
 # forces_calculation(speed,'F','z','integrated',sim_data_path,'CMF-forces-blades.txt','Plot',transient_rev=10,n_rev=1)
 # forces_calculation(speed,'F','z','integrated',sim_data_path,'CMF-forces-duct.txt','Plot',transient_rev=10,n_rev=1)
@@ -89,7 +91,10 @@ duct_z = [36,38,41,44,46,48,51,54,56,57,61]
 
 # --------------------------------------- Visualization --------------------------------------#
 
-pf_snc_cp(1.204,101325,6000,0.018,0.122,10,'/home/renj3003/PhD/rotor-alone/UdeS_Case/6e-5_6000rpm-transitional/data','cp')
+# pf_fnc_visualization(6000,0.25121,5.03808,5.34529,[-0.4,0.4],[-1.1,-0.5],sim_data_path,'avg-vor-mag-zyplane.txt','avg-vor-mag-zyplane_t.txt')
+# pf_delta_fnc_visualization(6000,0.25121,5.03808,5.34529,[-0.4,0.4],[-1.1,-0.5],sim_data_path,'avg-vel-mag-zyplane.txt','avg-vel-mag-zyplane_t.txt')
+# pf_snc_cp(1.204,101325,3500,0.018,0.122,10,sim_data_comp)
+pf_snc_cp_comparison(1.204,101325,6000,0.018,0.122,10,sim_data_comp,'radius','cp_r0p122.txt','cp_t_r0p122.txt')
 
 print('Time to do magic')
 
