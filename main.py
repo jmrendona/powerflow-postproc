@@ -6,14 +6,14 @@ from read_files import *
 from post_processing import *
 from pf_visualization import *
 
-images_path = '/home/renj3003/PhD/Drone_shroud/Cases/5e-5-nofloor/14mm/diametral/images'
+images_path = '/Users/jmrendona/Library/CloudStorage/OneDrive-USherbrooke/PhD/EDAT/Simulations/Iteration1/baseline/images'
 exp_data_path = '/Users/jmrendona/Library/CloudStorage/OneDrive-USherbrooke/PhD/EDAT/Experiments/Bell'
-sim_data_path = '/Users/jmrendona/Library/CloudStorage/OneDrive-USherbrooke/PhD/rotor-alone/6e-5-6000rpm/data'
+sim_data_path = '/Users/jmrendona/Library/CloudStorage/OneDrive-USherbrooke/PhD/EDAT/Simulations/Iteration1/baseline/data'
 sim_data_path_t = '/Users/jmrendona/Library/CloudStorage/OneDrive-USherbrooke/PhD/rotor-alone/6e-5-6000rpm-transition/data'
 sim_data_comp = '/Users/jmrendona/Library/CloudStorage/OneDrive-USherbrooke/PhD/rotor-alone/comparison/data'
 #read = int(input('If the .pfnc files want to be converted enter 1, otherwise enter a 0\n'))
-mics_sim = [0,90]
-# mics_sim = np.arange(0,180,15)
+# mics_sim = [0,90]
+mics_sim = np.arange(105,180,5)
 mics_exp = [16,9]
 # angles = np.arange(0,180,5)
 angles = [0]
@@ -21,7 +21,7 @@ mics=['000001','000013','000029']
 geometry = 'casing'
 pitch_key1 = 103
 pitch_key2 = 109
-speed = 6000
+speed = 3500
 n_blades = 2
 probes = [4,6,7,8]
 duct_pr = np.arange(40,96,5)
@@ -37,7 +37,7 @@ duct_z = [36,38,41,44,46,48,51,54,56,57,61]
 # experimental_check('/run/media/renj3003/BckSmoreau6/Jovan-McGill','0phi-11ms-3.h5','Ds001-Time','Ds084-Signal 13','0phi-11ms-3-900k')
 # experimental_check('/run/media/renj3003/BckSmoreau6/Jovan-McGill','0phi-3.h5','Ds01-Time','Ds14-Signal 13','0phi-3-400k')
 # pfncconvert(1,mics_sim,angles,sim_data_path)
-# time_trace_pfnc(speed,mics_sim,angles,sim_data_path,images_path,'Plot')
+# time_trace_pfnc(speed,angles,mics_sim,sim_data_path,images_path,'Plot')
 # time_trace_psnc(speed,duct_pr,duct_z,'velocity',sim_data_path,images_path,'Plot')
 # time_trace_psnc(speed,duct_pr,duct_z,'vorticity',sim_data_path,images_path,'Plot')
 # time_trace_psnc(speed,duct_pr,duct_z,'density',sim_data_path,images_path,'Plot')
@@ -61,8 +61,8 @@ duct_z = [36,38,41,44,46,48,51,54,56,57,61]
 # time,force_data,filter_time,filter_force = forces_calculation(speed,'F','y','integrated',sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
 # time_t,force_data_t,filter_time_t,filter_force_t = forces_calculation(speed,'F','y','integrated',sim_data_path_t,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
 # forces_calculation(speed,'M','y','integrated',sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
-# forces_calculation(speed,'F','z','integrated',sim_data_path,'CMF-forces-blades.txt','Plot',transient_rev=10,n_rev=1)
 # forces_calculation(speed,'F','z','integrated',sim_data_path,'CMF-forces-duct.txt','Plot',transient_rev=10,n_rev=1)
+# forces_calculation(speed,'M','z','integrated',sim_data_path,'CMF-forces-duct.txt','Plot',transient_rev=10,n_rev=1)
 # f,t,filter_time_m,filter_fz_m=forces_calculation(speed,'M','z','integrated',sim_data_path,'CMF-forces-single-stator.txt','Plot',transient_rev=10,n_rev=1)
 # forces_calculation(speed,'F','z','integrated',sim_data_path,'CMF-forces-stator.txt','Plot',transient_rev=10,n_rev=1)
 # time,force_data,filter_time_f,filter_force_f = forces_calculation(6420,'F','y',images_path,sim_data_path,'Forces.txt','Plot',transient_rev=10,n_rev=4)
@@ -72,9 +72,9 @@ duct_z = [36,38,41,44,46,48,51,54,56,57,61]
 # psnc_surface_avg(3500,duct_pr,angles,'velocity',sim_data_path,images_path1,'Plot',n_rev=1)
 # psnc_surface_avg(3500,duct_pr,angles,'pressure',sim_data_path,images_path1,'Plot',n_rev=1)
 # read_mass_flux(sim_data_path,'MassFlowRate_rear.csnc')
-# mass_flux(3500,images_path,sim_data_path,'MassFlowRate_rear.txt','Plot')
+mass_flux(3500,images_path,sim_data_path,'MassFlowRate_rear.txt','Plot')
 # read_mass_flux(sim_data_path,'MassFlowRate_front.csnc')
-# mass_flux(3500,images_path,sim_data_path,'MassFlowRate_front.txt','Plot')
+mass_flux(3500,images_path,sim_data_path,'MassFlowRate_front.txt','Plot')
 # spectrogram(2,6420,mics_sim,angles,sim_data_path,images_path,'fluid',8)
 # spectrogram(4,3500,duct_pr,duct_z,sim_data_path,images_path,5)
 # polar_forces_plot(speed,sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
@@ -94,7 +94,7 @@ duct_z = [36,38,41,44,46,48,51,54,56,57,61]
 # pf_fnc_visualization(6000,0.25121,5.03808,5.34529,[-0.4,0.4],[-1.1,-0.5],sim_data_path,'avg-vor-mag-zyplane.txt','avg-vor-mag-zyplane_t.txt')
 # pf_delta_fnc_visualization(6000,0.25121,5.03808,5.34529,[-0.4,0.4],[-1.1,-0.5],sim_data_path,'avg-vel-mag-zyplane.txt','avg-vel-mag-zyplane_t.txt')
 # pf_snc_cp(1.204,101325,3500,0.018,0.122,10,sim_data_comp)
-pf_snc_cp_comparison(1.204,101325,6000,0.018,0.122,10,sim_data_comp,'radius','cp_r0p122.txt','cp_t_r0p122.txt')
+# pf_snc_cp_comparison(1.204,101325,6000,0.018,0.122,10,sim_data_comp,'radius','cp_r0p122.txt','cp_t_r0p122.txt')
 
 print('Time to do magic')
 

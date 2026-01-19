@@ -208,7 +208,7 @@ def time_trace_pfnc(rpm:int,first_it:list,second_it:list,data_path:str,image_pat
                 plt.yticks(fontsize=14)
                 #plt.title('Time trace of ' + title)
                 plt.tight_layout()
-                print('Saving filtered figure\n')
+                print(f'Saving filtered figure for angle {i}-{j}\n')
                 plt.savefig(os.path.join(image_path,'timetrace/mics/filtered', image_name + '-filtered' + figure_extension), dpi=600)
                 #plt.show()
                 plt.close()
