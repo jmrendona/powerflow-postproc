@@ -69,8 +69,8 @@ def pf_delta_fnc_visualization(speed:float,diameter:float,lx,ly,xlim:list,ylim:l
         plt.tight_layout()
         plt.savefig(os.path.join(os.path.dirname(path),'images','delta_'+ file.split('.')[0] +'.png'), dpi=600)
         plt.show() 
-    
-def pf_snc_cp(rho:float,char_p:float,rpm:int,lower_r:float,upper_r:float,r_number:int,path:str):
+   
+def pf_snc_cp_vertical(rho:float,char_p:float,rpm:int,lower_r:float,upper_r:float,r_number:int,path:str):
     
     radius = np.append(np.linspace(upper_r,lower_r,r_number),np.linspace(-lower_r,-upper_r,r_number))
     radius = [0.367,0.348,0.309,0.194,0.116]
@@ -126,6 +126,70 @@ def pf_snc_cp(rho:float,char_p:float,rpm:int,lower_r:float,upper_r:float,r_numbe
         # plt.show()
         plt.close()
         
+def pf_snc_cp(rho:float,char_p:float,rpm:int,radius:list,le_loc:float,te_loc,c_number:int,path:str):
+    
+    '''
+    This function will generate the plot of the defined variable \n
+    at a defined radii cut. For it multiple span-aligned extraction \n
+    need to be performed at the defined chord locations.\n
+    \n
+    It is recommended that this script is used with the data given from\n
+    the 'pf_powerviz_span-aligned-extraction.py' script. 
+    '''
+    
+    file_num = np.arange(0, c_number)
+    chord_loc = np.linspace(le_loc, te_loc, c_number)
+    
+    for r in radius: 
+        
+        cp_ss_full = []
+        cp_ps_full = []
+        x_full = []
+        
+        for n,c in zip(file_num,chord_loc):
+            
+            print(f'Analysis for number {n} which is location c={c}m')
+            
+            data = pd.read_csv(f'y+_s{n}')
+            headers = data.columns.tolist()
+            positions = data[headers[0]]
+            variable = data[headers[1]]
+            
+            if np.min(positions) == '*':
+                print(10*'-'+'Division done by *'+10*'-')
+                
+                positions_ss = positions[:np.where(positions==np.min(positions)[0][0])]
+                variable_ss = variable[:np.where(positions==np.min(positions)[0][0])]
+                
+                positions_ps = positions[np.where(positions==np.min(positions)[0][0])+1:]
+                variable_ps = variable[np.where(positions==np.min(positions)[0][0])+1:]
+                
+            else:
+                print(10*'-'+'Division done by max value *'+10*'-')
+
+                positions_ss = positions[:np.where(positions==np.max(positions)[0][0])]
+                variable_ss = variable[:np.where(positions==np.max(positions)[0][0])]
+                
+                positions_ps = positions[np.where(positions==np.max(positions)[0][-1])+1:]
+                variable_ps = variable[np.where(positions==np.max(positions)[0][-1])+1:]   
+                
+            x_target = np.sqrt(r**2 - c**2)
+            x_full.append(x_target)
+            
+            cp_ss = np.interp(x_target, positions_ss, variable_ss)
+            cp_ss_full.append(cp_ss)
+            
+            cp_ps = np.interp(x_target, positions_ps, variable_ps)
+            cp_ps_full.append(cp_ps)
+        
+        cp_ss_full = np.asarray(cp_ss_full)
+        cp_ps_full = np.asarray(cp_ps_full)
+        
+        u_inf = (2*np.pi*rpm*np.abs(r))/60
+        cp_suction = (cp_ss_full - char_p)/(0.5 * rho * u_inf ** 2)
+        cp_pressure = (cp_ps_full - char_p)/(0.5 * rho * u_inf ** 2)
+        
+        plt.plot(-suction_s_x/(0.25121/2),-cp_s_smooth,'k')
         
         
 def pf_snc_cp_comparison(rho:float,char_p:float,rpm:int,lower_r:float,upper_r:float,r_number:int,path:str,iteration:str,*files:str):

@@ -116,16 +116,16 @@ def _h5_read_file(full_filename,mic):
 
     return mat_data_NN,dt,time
 
-def pfncconvert(read,mics,angles,data_path):
+def pfnc_convert(read,mics,angles,data_path):
 
     """
     This function helps to convert in a loop various .pfnc files from PowerFlow\n
-    to .txt files for a further analysis.\n
+    to .txt files for a further analysis based on the file name mic_{mics}_{angles}.\n
     \n
     The needed inputs are the followings:\n
     - read = given input from the user. 1 to perform conversion, 0 otherwise\n
-    - mics = an array with the number of mics to convert (file name)\n
-    - angles = an array with the number of angles to convert (file name)\n
+    - mics = an array with the number of mics to convert (first it)\n
+    - angles = an array with the number of angles to convert (second it)\n
     - data_path = the path where the .pfnc files are located \n
 
     """
@@ -134,8 +134,8 @@ def pfncconvert(read,mics,angles,data_path):
 
         print('The conversion of the .pfnc files into .txt files will start\n')
 
-        for i in angles:
-            for j in mics:
+        for i in mics:
+            for j in angles:
                 print('--------------------------------\n')
                 print(f'Converting mic {j} at angle {i}\n')
                 globals()[f'mic_{i}_{j}'] = read_probe_file(data_path ,f'mic_{i}_{j}.pfnc')
@@ -144,7 +144,7 @@ def pfncconvert(read,mics,angles,data_path):
 
         print('No conversion will be done. Check the given input')
 
-def time_trace_pfnc(rpm:int,first_it:list,second_it:list,data_path:str,image_path:str,case:str,transient_rev=10,n_rev=2):
+def time_trace_pfnc(rpm:int,first_it:list,second_it:list,data_path:str,case:str,transient_rev=10,n_rev=2):
 
     '''
     This function implements the ploting and analysis of the time trace of fluid probes\n
@@ -167,6 +167,9 @@ def time_trace_pfnc(rpm:int,first_it:list,second_it:list,data_path:str,image_pat
     base_filename = 'mic_0_0.txt' # To compare with input line 121
     print('The base file name is as:', base_filename)
     rev_time = 60/rpm
+    
+    image_path = os.path.join(os.path.dirname(data_path),'images/timetrace/mics')
+    os.makedirs(image_path, exist_ok=True)
 
     for i in first_it:
         for j in second_it:
@@ -193,8 +196,9 @@ def time_trace_pfnc(rpm:int,first_it:list,second_it:list,data_path:str,image_pat
                 plt.yticks(fontsize=14)
                 #plt.title('Time trace of ' + title)
                 plt.tight_layout()
+                print(40*'-')
                 print('Saving non-filtered figure\n')
-                plt.savefig(os.path.join(image_path,'timetrace/mics/full', image_name + figure_extension), dpi=600)
+                plt.savefig(os.path.join(image_path, image_name + figure_extension), dpi=600)
                 #plt.show()
                 plt.close()
 
@@ -208,8 +212,9 @@ def time_trace_pfnc(rpm:int,first_it:list,second_it:list,data_path:str,image_pat
                 plt.yticks(fontsize=14)
                 #plt.title('Time trace of ' + title)
                 plt.tight_layout()
+                print(40*'-')
                 print(f'Saving filtered figure for angle {i}-{j}\n')
-                plt.savefig(os.path.join(image_path,'timetrace/mics/filtered', image_name + '-filtered' + figure_extension), dpi=600)
+                plt.savefig(os.path.join(image_path, image_name + '-filtered' + figure_extension), dpi=600)
                 #plt.show()
                 plt.close()
 
@@ -446,6 +451,9 @@ def single_welch(n_blades:int,speed:int,angles:list,mics:list,data_path:str,imag
 
     BPF = n_blades * speed / 60
 
+    image_path = os.path.join(os.path.dirname(data_path),'images/PSD/mics/singles')
+    os.makedirs(image_path, exist_ok=True)
+
     for i in angles:
         for j in mics:
 
@@ -499,7 +507,7 @@ def single_welch(n_blades:int,speed:int,angles:list,mics:list,data_path:str,imag
                     plt.yticks(fontsize=12)
                     print('Saving confidential figure\n')
                     print('---------------------------------------------------------\n')
-                    plt.savefig(os.path.join(image_path, 'PSD/mics/singles', image_name + figure_extension) , dpi=600)
+                    plt.savefig(os.path.join(image_path, image_name + figure_extension) , dpi=600)
                     #plt.show()
                     plt.close()
 
@@ -519,7 +527,7 @@ def single_welch(n_blades:int,speed:int,angles:list,mics:list,data_path:str,imag
                     plt.yticks(fontsize=12)
                     print('Saving figure with levels \n')
                     print('---------------------------------------------------------\n')
-                    plt.savefig(os.path.join(image_path, 'PSD/mics/singles', image_name + '_levels' + figure_extension), dpi=600)
+                    plt.savefig(os.path.join(image_path, image_name + '_levels' + figure_extension), dpi=600)
                     #plt.show()
                     plt.close()
 
@@ -1923,6 +1931,9 @@ def spectrogram(n_blades,rpm,first_it,second_it,data_path,image_path,type_probe,
     base_filename = 'probe_in_duct_{-}pr_{-}z_no_impigning_side_export.txt' # To compare with input line 121
     print('The base file name is as:', base_filename)
 
+    image_path = os.path.join(os.path.dirname(data_path),'images/spectrogram/mics/singles')
+    os.makedirs(image_path, exist_ok=True)
+
     BPF = n_blades * rpm / 60
     rev_time = 60/rpm
 
@@ -1931,7 +1942,7 @@ def spectrogram(n_blades,rpm,first_it,second_it,data_path,image_path,type_probe,
 
             if type_probe == 'fluid':
                 
-                file_name = f'mic{i}_{j}.txt'
+                file_name = f'mic_{i}_{j}.txt'
                 image_name = file_name.split('.')[0]
                 data_full = pd.read_csv(os.path.join(data_path,file_name),delimiter='\s+')
                 time = data_full['#time']
@@ -1983,7 +1994,7 @@ def spectrogram(n_blades,rpm,first_it,second_it,data_path,image_path,type_probe,
             plt.yticks(fontsize=14)
             plt.tight_layout()
             print(f'Saving spectrogram for data with iterating {i}-{j}')
-            plt.savefig(os.path.join(image_path, 'spectrograms',image_name + '_spectrogram-2.png'), dpi=600)
+            plt.savefig(os.path.join(image_path,image_name + '_spectrogram.png'), dpi=600)
             plt.close()
 
 
