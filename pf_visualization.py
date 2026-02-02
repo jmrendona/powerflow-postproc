@@ -126,7 +126,7 @@ def pf_snc_cp_vertical(rho:float,char_p:float,rpm:int,lower_r:float,upper_r:floa
         # plt.show()
         plt.close()
         
-def pf_snc_cp(rho:float,char_p:float,rpm:int,radius:list,le_loc:float,te_loc,c_number:int,path:str):
+def pf_snc_cp(rho:float,char_p:float,rpm:int,radius:list,le_loc:float,te_loc,c_number:int,chord:float,variable:str,path:str):
     
     '''
     This function will generate the plot of the defined variable \n
@@ -137,11 +137,14 @@ def pf_snc_cp(rho:float,char_p:float,rpm:int,radius:list,le_loc:float,te_loc,c_n
     the 'pf_powerviz_span-aligned-extraction.py' script. 
     '''
     
+    image_path = os.makedirs(os.path.join(os.path.dirname(path),'images/cp'))
+    
     file_num = np.arange(0, c_number)
     chord_loc = np.linspace(le_loc, te_loc, c_number)
     
     for r in radius: 
         
+        name = str(r).split('.')[0] + 'p' + str(np.round(r,deciamls=3)).split('.')[1]
         cp_ss_full = []
         cp_ps_full = []
         x_full = []
@@ -150,7 +153,7 @@ def pf_snc_cp(rho:float,char_p:float,rpm:int,radius:list,le_loc:float,te_loc,c_n
             
             print(f'Analysis for number {n} which is location c={c}m')
             
-            data = pd.read_csv(f'y+_s{n}')
+            data = pd.read_csv(f'{variable}_s{n}')
             headers = data.columns.tolist()
             positions = data[headers[0]]
             variable = data[headers[1]]
@@ -184,12 +187,23 @@ def pf_snc_cp(rho:float,char_p:float,rpm:int,radius:list,le_loc:float,te_loc,c_n
         
         cp_ss_full = np.asarray(cp_ss_full)
         cp_ps_full = np.asarray(cp_ps_full)
+        x_full = np.asarray(x_full)
         
         u_inf = (2*np.pi*rpm*np.abs(r))/60
         cp_suction = (cp_ss_full - char_p)/(0.5 * rho * u_inf ** 2)
         cp_pressure = (cp_ps_full - char_p)/(0.5 * rho * u_inf ** 2)
         
-        plt.plot(-suction_s_x/(0.25121/2),-cp_s_smooth,'k')
+        plt.plot(x_full/chord,-cp_suction,'k')
+        plt.plot(x_full/chord,-cp_pressure,'k')
+        plt.grid(True, which='both', ls='--')
+        plt.xlabel('$x/c [-]$', fontsize=16)
+        plt.ylabel('$-C_p [-]$', fontsize=16)
+        plt.xticks(fontsize=12)
+        plt.yticks(fontsize=12)
+        print(f'Saving the Cp for radius {r}\n')
+        print(40*'-')
+        plt.tight_layout
+        plt.savefig(os.path.join(image_path,f'cp_r' + name + '.png'))
         
         
 def pf_snc_cp_comparison(rho:float,char_p:float,rpm:int,lower_r:float,upper_r:float,r_number:int,path:str,iteration:str,*files:str):

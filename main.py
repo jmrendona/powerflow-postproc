@@ -74,42 +74,36 @@ duct_z = [36,38,41,44,46,48,51,54,56,57,61]
 
 # -------------------- Spectrogram of PF mics & probes -------------------- #
 
-spectrogram(n_blades,speed,mics_sim,angles,sim_data_path,images_path,'fluid',1)
+# spectrogram(n_blades,speed,mics_sim,angles,sim_data_path,images_path,'fluid',1)
 
 
 # coherence(n_blades,speed,images_path1,'mic1-pr3',sim1_dataq_path,'mic1_0.txt',sim1_data_path,'duct-pr-4.txt')
 # sherfwhwelch(n_blades,speed,mics,sim1_data_path,images_path1,geometry,'Plot','density')
-# time,fy_data,filter_time_m,filter_fy_m =
-# forces_calculation(speed,'M','z','integrated',images_path,sim_data_path,'CMF-forces-all.txt','Plot',transient_rev=10,n_rev=1)
-# time,fx_data,filter_time_m,filter_fx_m =
-# forces_calculation(speed,'M','z','integrated',images_path,sim_data_path,'CMF-forces-casing.txt','Plot',transient_rev=10,n_rev=1)
-# time,fz_data,filter_time_m,filter_fz_m = 
-# time,force_data,filter_time,filter_force = forces_calculation(speed,'F','y','integrated',sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
-# time_t,force_data_t,filter_time_t,filter_force_t = forces_calculation(speed,'F','y','integrated',sim_data_path_t,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
-# forces_calculation(speed,'M','y','integrated',sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
-# forces_calculation(speed,'F','z','integrated',sim_data_path,'CMF-forces-duct.txt','Plot',transient_rev=10,n_rev=1)
-# forces_calculation(speed,'M','z','integrated',sim_data_path,'CMF-forces-duct.txt','Plot',transient_rev=10,n_rev=1)
-# f,t,filter_time_m,filter_fz_m=forces_calculation(speed,'M','z','integrated',sim_data_path,'CMF-forces-single-stator.txt','Plot',transient_rev=10,n_rev=1)
-# forces_calculation(speed,'F','z','integrated',sim_data_path,'CMF-forces-stator.txt','Plot',transient_rev=10,n_rev=1)
-# time,force_data,filter_time_f,filter_force_f = forces_calculation(6420,'F','y',images_path,sim_data_path,'Forces.txt','Plot',transient_rev=10,n_rev=4)
+
+# -------------------- Forces calculation from *.csnc  --------------------- #
+
+# forces_calculation(speed,'M','y','integrated',sim_data_path,'CMF_rotor.txt','Plot',transient_rev=10,n_rev=1)
+# forces_calculation(speed,'F','y','integrated',sim_data_path,'CMF_rotor.txt','Plot',transient_rev=10,n_rev=1)
+
+# ------------------ Polar plot calculation from *.csnc  ------------------- #
+
+polar_forces_plot(speed,sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
+
+
 # induced_velocity_fluidline(0.0229,0.089,20,'FluidPoint-LineGraph-12mm.csv',sim_data_path,images_path)
 # psnc_surface_avg(3500,duct_pr,angles,'velocity',sim_data_path,images_path1,'Plot')
 # psnc_surface_avg(3500,duct_pr,angles,'pressure',sim_data_path,images_path1,'Plot')
 # psnc_surface_avg(3500,duct_pr,angles,'velocity',sim_data_path,images_path1,'Plot',n_rev=1)
 # psnc_surface_avg(3500,duct_pr,angles,'pressure',sim_data_path,images_path1,'Plot',n_rev=1)
-# read_mass_flux(sim_data_path,'MassFlowRate_rear.csnc')
-# mass_flux(3500,images_path,sim_data_path,'MassFlowRate_rear.txt','Plot')
-# read_mass_flux(sim_data_path,'MassFlowRate_front.csnc')
-# mass_flux(3500,images_path,sim_data_path,'MassFlowRate_front.txt','Plot')
 
-# polar_forces_plot(speed,sim_data_path,'CMF_rotor.txt','Plot',transient_rev=9,n_rev=1)
-# polar_forces_plot(speed,sim_data_path,'CMF-forces-casing.txt','Plot',transient_rev=10,n_rev=2)
-# polar_forces_plot(speed,sim_data_path,'CMF-forces-rotor.txt','Plot',transient_rev=10,n_rev=2)
-# polar_forces_plot(speed,sim_data_path,'CMF-forces-single-stator.txt','Plot',transient_rev=10,n_rev=4)
-# polar_forces_plot(speed,sim_data_path,'CMF-forces-blades.txt','Plot',transient_rev=10,n_rev=2)
-# polar_forces_plot(speed,sim_data_path,'CMF-forces-duct.txt','Plot',transient_rev=10,n_rev=2)
-# polar_forces_plot(speed,sim_data_path,'CMF-forces-single-blade.txt','Plot',transient_rev=10,n_rev=4)
-# polar_forces_plot(speed,sim_data_path,'CMF-forces-stator.txt','Plot',transient_rev=10,n_rev=2)
+# -------------------- Mass flow verification of *.csnc ------------------- #
+
+# read_mass_flux(sim_data_path,'CSFM_mass_rotor_inlet.csnc')
+# mass_flux(speed,sim_data_path,'CSFM_mass_rotor_inlet.txt','Plot')
+# read_mass_flux(sim_data_path,'CSFM_mass_rotor_outlet.csnc')
+# mass_flux(speed,sim_data_path,'CSFM_mass_rotor_outlet.txt','Plot')
+
+
 
 # pdb.set_trace()
 
@@ -124,37 +118,3 @@ spectrogram(n_blades,speed,mics_sim,angles,sim_data_path,images_path,'fluid',1)
 print('Time to do magic')
 
 # pdb.set_trace()
-
-# plt.plot(filter_time_m,filter_fz_m,'k',label='$F_y$')
-# # plt.plot(filter_time_m,filter_fz_m,'r',label='$F_z$')
-# # plt.plot(filter_time_m,filter_fx_m,'b',label='$F_x$')
-# for i,j in zip(range(6),range(6)):
-#     plt.axvline(0.17321 + (i * 0.00286),color='red',linestyle='--')
-#     # plt.axvline(0.173 + 0.00286/2 + (j*0.00286),color='blue',linestyle='--')
-# plt.grid()
-# plt.xlabel('Time $[s]$',fontsize=14, style='italic')
-# plt.ylabel('Force $[N]$',fontsize=14, style='italic')
-# # plt.title('Filtered Thrust of the system')
-# plt.xticks(fontsize=14)
-# plt.yticks(fontsize=14)
-# ax=plt.gca()
-# ax.tick_params(axis='y')
-# ax.set_yticklabels([])
-# ax.set_ylabel('Thrust $[N]$',fontsize=14, style='italic')
-# ax2 = ax.twinx()  # Create a second axes sharing the same y-axis
-# ax2.plot(filter_time_m,np.abs(filter_fz_m),'b',label='$F_z$')
-# ax2.set_ylabel('$F_z/F_x [N]$',fontsize=14, style='italic')
-# ax2.tick_params(axis='y')
-# # ax3 = ax.twinx()
-# ax2.plot(filter_time_m,np.abs(filter_fx_m),'r',label='$F_x$')
-# # ax3.set_ylabel('$F_x [N]$', color='red',fontsize=14, style='italic')
-# # ax3.tick_params(axis='y', labelcolor='red')
-# # ax3.set_yticklabels([])
-# ax2.yaxis.tick_right()
-# ax3.yaxis.tick_right()
-# ax3.spines['right'].set_position(('outward', 50))
-# plt.legend()
-# plt.tight_layout()
-# plt.savefig(os.path.join(images_path, 'forces/filtered', 'All-forces-filtered-4rev-2cale.png'), dpi=600)
-# plt.show()
-# plt.close()

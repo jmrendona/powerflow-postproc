@@ -116,6 +116,9 @@ def _h5_read_file(full_filename,mic):
 
     return mat_data_NN,dt,time
 
+def forces_2_h5():
+    return()
+
 def pfnc_convert(read,mics,angles,data_path):
 
     """
@@ -309,7 +312,10 @@ def time_trace_psnc(rpm:int,first_it:list,second_it:list,variable:str,data_path:
 
     return(time, data)
 
-def mass_flux(rpm,image_path,path,file_name,case,transient_rev=10,n_rev=1):
+def mass_flux(rpm,path,file_name,case,transient_rev=10,n_rev=1):
+
+    image_path = os.path.join(os.path.dirname(path),'images/mass-flux')
+    os.makedirs(image_path, exist_ok=True)
 
     image_name = file_name.split('.')[0]
     data = pd.read_csv(os.path.join(path,file_name),delimiter='\s+')
@@ -336,7 +342,7 @@ def mass_flux(rpm,image_path,path,file_name,case,transient_rev=10,n_rev=1):
         # ax.set_yticklabels([])
         # ax.yaxis.tick_right()
         plt.tight_layout()
-        plt.savefig(os.path.join(image_path,'mass-flux/full',image_name+figure_extension), dpi=600)
+        plt.savefig(os.path.join(image_path,image_name+figure_extension), dpi=600)
         #plt.show()
         plt.close()
 
@@ -351,7 +357,7 @@ def mass_flux(rpm,image_path,path,file_name,case,transient_rev=10,n_rev=1):
         # ax.set_yticklabels([])
         # ax.yaxis.tick_right()
         plt.tight_layout()
-        plt.savefig(os.path.join(image_path,'mass-flux/filtered',image_name + f'_{n_rev}rev_filtered' + figure_extension), dpi=600)
+        plt.savefig(os.path.join(image_path,image_name + f'_{n_rev}rev_filtered' + figure_extension), dpi=600)
         #plt.show()
         plt.close()
 
@@ -1576,7 +1582,8 @@ def polar_forces_plot(rpm:int,data_path:str,file_name:str,case:str,transient_rev
             #plt.title('Thrust of the system')
             plt.xticks(fontsize=14)
             plt.yticks(fontsize=14)
-            #ax=plt.gca()
+            ax=plt.gca()
+            ax.xaxis.set_major_locator(ticker.MaxNLocator(5))
             #ax.set_yticklabels([])
             #ax.yaxis.tick_right()
             plt.tight_layout()
@@ -1593,11 +1600,10 @@ def polar_forces_plot(rpm:int,data_path:str,file_name:str,case:str,transient_rev
             #plt.title('Filtered Thrust of the system')
             plt.xticks(fontsize=14)
             plt.yticks(fontsize=14)
-            # plt.ylim([1.25,3.25])
-            # plt.xlim([-4.75,-1.75])
+            plt.ylim([-0.01,0.01])
+            plt.xlim([2.62,2.72])
             ax=plt.gca()
-            ax.set_yticklabels([])
-            ax.set_xticklabels([])
+            ax.xaxis.set_major_locator(ticker.MaxNLocator(5))
             #ax.yaxis.tick_right()
             plt.tight_layout()
             print('Saving filtered polar forces')
